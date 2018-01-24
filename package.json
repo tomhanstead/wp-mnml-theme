@@ -1,0 +1,40 @@
+{
+    "name": "wp-mnml",
+    "version": "1.0.0",
+    "license": "MIT",
+    "dependencies": {
+        "autoprefixer": "*",
+        "eslint": "*",
+        "nodemon": "*",
+        "npm-run-all": "*",
+        "node-sass": "*",
+        "rimraf": "*",
+        "postcss": "*",
+        "postcss-cli": "*",
+        "uglify-js": "*"
+    },
+    "eslintConfig": {
+        "env": {
+            "es6": true,
+            "node": true,
+            "browser": true
+        },
+        "extends": "eslint:recommended",
+        "rules": {
+            "no-console": "off"
+        }
+    },
+    "scripts": {
+        "clean": "rimraf assets/{css/site.css,js/site.min.js}",
+        "autoprefixer": "postcss -u autoprefixer --autoprefixer.browsers '> 0.5%', 'IE 9' -r assets/css/*",
+        "js:uglify": "uglifyjs assets/js/site.js -m -o assets/js/site.min.js",
+        "js:lint": "eslint assets/js/site.js",
+        "sass": "node-sass --output-style compressed -o assets/css/ assets/scss/site.scss",
+        "build:css": "npm-run-all sass autoprefixer",
+        "watch:css": "nodemon --ext scss -x \"npm run build:css\"",
+        "build:js": "npm-run-all js:lint js:uglify",
+        "watch:js": "nodemon --ext js --ignore site.min.js -x \"npm run build:js\"",
+        "build": "npm-run-all build:css build:js",
+        "watch": "npm-run-all --parallel watch:css watch:js"
+    }
+}
