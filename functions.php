@@ -40,8 +40,6 @@ if ( ! function_exists( 'mnml_setup' ) ) {
 	}
 
 } // mnml_setup
-
-// Tell WordPress to run setup function when the 'after_setup_theme' hook is run.
 add_action( 'after_setup_theme', 'mnml_setup' );
 
 function mnml_inline_styles() {
