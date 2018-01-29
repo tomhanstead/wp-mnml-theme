@@ -9,8 +9,8 @@
 			get_template_part( 'items/item', 'none' );
 		}
 
-		if ( show_posts_nav() ) {
-			get_template('blocks/block', 'pagination');
+		if ( mnml_show_posts_nav() ) {
+			get_template( 'blocks/block', 'pagination' );
 		}
 
 	get_footer();

@@ -7,7 +7,7 @@
 			get_template_part( 'items/item', 'none' );
 		}
 
-		if ( show_posts_nav() ) {
+		if ( mnml_show_posts_nav() ) {
 			get_template_part( 'blocks/block', 'pagination' );
 		}
 
