@@ -17,7 +17,6 @@ if ( ! function_exists( 'mnml_setup' ) ) {
 			'footer'		=> __( 'Footer Navigation', 'wp-mnml' )
 		) );
 
-		// Remove the crap from the wp_head() function
 		remove_action('wp_head', 'rsd_link');
 		remove_action('wp_head', 'wp_generator');
 		remove_action('wp_head', 'feed_links', 2);
@@ -28,7 +27,6 @@ if ( ! function_exists( 'mnml_setup' ) ) {
 		remove_action('wp_head', 'parent_post_rel_link', 10, 0);
 		remove_action('wp_head', 'adjacent_posts_rel_link', 10, 0);
 
-		// Remove any unwanted wordpress dashboard boxes
 		function disable_default_dashboard_widgets() {
 			remove_meta_box('dashboard_recent_comments', 'dashboard', 'core');
 			remove_meta_box('dashboard_incoming_links', 'dashboard', 'core');
@@ -43,23 +41,33 @@ if ( ! function_exists( 'mnml_setup' ) ) {
 add_action( 'after_setup_theme', 'mnml_setup' );
 
 function mnml_inline_styles() {
-	$css_file = get_template_directory_uri() . '/css/core.css?asd';
+	$css_file = get_template_directory_uri() . '/assets/css/critical.css?asd';
 	$css = file_get_contents($css_file);
 
 	echo "<style>{$css}</style>";
 }
 add_action( 'wp_head', 'mnml_inline_styles', 40 );
 
-
 function mnml_enqueue_styles() {
-	// Better jQuery inclusion
-	if ( !is_admin() ) {
-		wp_deregister_script('jquery');
-	}
+	wp_register_style( 'mnml-styles', get_template_directory_uri() . '/assets/css/site.css', false, '1.0.0' );
+	wp_enqueue_style( 'mnml-styles' );
 }
 add_action( 'wp_enqueue_scripts', 'mnml_enqueue_styles' );
 
-// Add ACF Options Page
+function mnml_enqueue_scripts() {
+	if ( !is_admin() ) {
+		wp_deregister_script('jquery');
+	}	
+	wp_register_script( 'mnml-scripts', get_template_directory_uri() .  '/assets/js/site.min.js', false, '1.0.0' );
+	wp_enqueue_script( 'mnml-scripts' );
+}
+add_action( 'wp_enqueue_scripts', 'mnml_enqueue_scripts' );
+
+function mnml_show_posts_nav() {
+	global $wp_query;
+	return ($wp_query->max_num_pages > 1);
+}
+
 function mnml_acf_options_page() {
 	if ( function_exists( 'acf_add_options_page') ) {
 		acf_add_options_page( array (
@@ -68,6 +76,19 @@ function mnml_acf_options_page() {
 	}
 }
 add_action( 'init', 'mnml_acf_options_page');
+
+function mnml_save_acf_json( $path ) {
+	$path = get_template_directory_uri() . '/acf';
+	return $path;	
+}
+add_filter('acf/settings/save_json', 'mnml_save_acf_json');
+
+function mnml_load_acf_json( $paths ) {
+    unset($paths[0]);
+    $paths[] = get_template_directory_uri() . '/acf';
+    return $paths;
+}
+add_filter('acf/settings/load_json', 'mnml_load_acf_json');
 
 // Remove Emoji from TinyMCE
 function mnml_disable_emojis_tinymce( $plugins ) {
