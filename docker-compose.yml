@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+
+    database:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: example
+        volumes:
+            - ./.data/db:/var/lib/mysql
+        restart: always
+
+    wordpress:
+        image: wordpress:latest
+        depends_on:
+            - database
+        ports:
+            - 8080:80
+        environment:
+            WORDPRESS_DB_HOST: database:3306
+            WORDPRESS_DB_PASSWORD: example
+        working_dir: /var/www/html
+        volumes:
+            - ./:/var/www/html/wp-content/themes/wp-mnml-theme/
+        restart: always
