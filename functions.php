@@ -41,15 +41,16 @@ if ( ! function_exists( 'mnml_setup' ) ) {
 add_action( 'after_setup_theme', 'mnml_setup' );
 
 function mnml_inline_styles() {
-	$css_file = get_template_directory_uri() . '/assets/css/critical.css?asd';
-	$css = file_get_contents($css_file);
-
+	$css_file = get_template_directory() . '/assets/css/critical.css';
+	$css = file_get_contents($css_file, true);
 	echo "<style>{$css}</style>";
 }
 add_action( 'wp_head', 'mnml_inline_styles', 40 );
 
 function mnml_enqueue_styles() {
-	wp_register_style( 'mnml-styles', get_template_directory_uri() . '/assets/css/site.css', false, '1.0.0' );
+	wp_register_style( 'mnml-critical', get_template_directory_uri() . '/assets/css/critical.css', false, '1.0.0' );
+	// in order to enqueue site.cc, you need critical.css
+	wp_register_style( 'mnml-styles', get_template_directory_uri() . '/assets/css/site.css', $dependencies = array('mnml-critical'), '1.0.0' );
 	wp_enqueue_style( 'mnml-styles' );
 }
 add_action( 'wp_enqueue_scripts', 'mnml_enqueue_styles' );
